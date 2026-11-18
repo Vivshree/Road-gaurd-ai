@@ -120,7 +120,7 @@ def render_executive_overview():
         st.info(map_msg)
 
     if folium_map:
-        st_folium(folium_map, width="100%", height=460)
+        st_folium(folium_map, use_container_width=True, height=460)
     else:
         st.info("Map disabled: Coordinates unavailable in the current dataset.")
 

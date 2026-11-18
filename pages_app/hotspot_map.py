@@ -96,7 +96,7 @@ def render_hotspot_map():
         st.caption(f"ℹ️ {map_notice}")
 
     if folium_map:
-        st_folium(folium_map, width="100%", height=620)
+        st_folium(folium_map, use_container_width=True, height=620)
     else:
         st.error("Failed to compile spatial visualization.")
 
