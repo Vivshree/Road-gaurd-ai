@@ -1,6 +1,6 @@
 """
 ROADGUARD AI - Interactive Plotly Data Visualizer
-Builds command-center dark themed visualizations for exploratory and academic decision support.
+Builds high-clarity light-themed visualizations for exploratory and academic decision support.
 """
 
 import plotly.express as px
@@ -13,33 +13,36 @@ from src.config import (
     COLOR_RED_SEVERE, COLOR_GREEN_MILD, COLOR_TEXT, COLOR_BORDER, CLUSTER_COLORS
 )
 
-def apply_dark_theme(fig: go.Figure) -> go.Figure:
-    """Applies unified dark command-center aesthetic to any Plotly figure."""
+def apply_light_theme(fig: go.Figure) -> go.Figure:
+    """Applies modern clean light aesthetic to any Plotly figure."""
     fig.update_layout(
-        paper_bgcolor=COLOR_PANEL,
-        plot_bgcolor=COLOR_PANEL,
-        font=dict(family="Plus Jakarta Sans, sans-serif", color=COLOR_TEXT, size=12),
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#F8FAFC",
+        font=dict(family="Plus Jakarta Sans, sans-serif", color="#0F172A", size=12),
         margin=dict(l=40, r=40, t=50, b=40),
         legend=dict(
-            bgcolor="rgba(19, 30, 48, 0.7)",
-            bordercolor=COLOR_BORDER,
+            bgcolor="rgba(255, 255, 255, 0.95)",
+            bordercolor="#E2E8F0",
             borderwidth=1,
-            font=dict(color=COLOR_TEXT, size=11),
+            font=dict(color="#1E293B", size=11),
         ),
         xaxis=dict(
-            gridcolor=COLOR_BORDER,
-            zerolinecolor=COLOR_BORDER,
-            tickfont=dict(color="#94A3B8"),
-            title_font=dict(color="#CBD5E1", size=12),
+            gridcolor="#F1F5F9",
+            zerolinecolor="#E2E8F0",
+            tickfont=dict(color="#475569"),
+            title_font=dict(color="#0F172A", size=12, family="Plus Jakarta Sans, sans-serif"),
         ),
         yaxis=dict(
-            gridcolor=COLOR_BORDER,
-            zerolinecolor=COLOR_BORDER,
-            tickfont=dict(color="#94A3B8"),
-            title_font=dict(color="#CBD5E1", size=12),
+            gridcolor="#F1F5F9",
+            zerolinecolor="#E2E8F0",
+            tickfont=dict(color="#475569"),
+            title_font=dict(color="#0F172A", size=12, family="Plus Jakarta Sans, sans-serif"),
         ),
     )
     return fig
+
+# Alias for backward-compatible imports
+apply_dark_theme = apply_light_theme
 
 
 def plot_executive_trends(df: pd.DataFrame) -> go.Figure:
@@ -70,7 +73,7 @@ def plot_executive_trends(df: pd.DataFrame) -> go.Figure:
         fig = go.Figure()
         fig.add_annotation(text="Date feature not available for temporal trend", showarrow=False)
 
-    return apply_dark_theme(fig)
+    return apply_light_theme(fig)
 
 
 def plot_severity_distribution(df: pd.DataFrame) -> go.Figure:
@@ -90,7 +93,7 @@ def plot_severity_distribution(df: pd.DataFrame) -> go.Figure:
             labels=sev_counts["Severity"],
             values=sev_counts["Count"],
             hole=0.6,
-            marker=dict(colors=colors, line=dict(color=COLOR_PANEL, width=2)),
+            marker=dict(colors=colors, line=dict(color="#FFFFFF", width=2)),
             textinfo="label+percent",
             hoverinfo="label+value+percent",
         )])
@@ -99,7 +102,7 @@ def plot_severity_distribution(df: pd.DataFrame) -> go.Figure:
         fig = go.Figure()
         fig.add_annotation(text="Severity attribute not present", showarrow=False)
 
-    return apply_dark_theme(fig)
+    return apply_light_theme(fig)
 
 
 def plot_accidents_by_hour(df: pd.DataFrame) -> go.Figure:
@@ -113,18 +116,18 @@ def plot_accidents_by_hour(df: pd.DataFrame) -> go.Figure:
         hour_counts = all_hours.merge(hour_counts, on="Hour", how="left").fillna(0)
 
         colors = [
-            "rgba(245, 158, 11, 0.85)" if (h >= 20 or h < 6) else "rgba(34, 211, 238, 0.85)"
+            "rgba(217, 119, 6, 0.9)" if (h >= 20 or h < 6) else "rgba(2, 132, 199, 0.9)"
             for h in hour_counts["Hour"]
         ]
 
         fig = go.Figure(data=[go.Bar(
             x=hour_counts["Hour"],
             y=hour_counts["Count"],
-            marker=dict(color=colors, line=dict(color=COLOR_BORDER, width=1)),
+            marker=dict(color=colors, line=dict(color="#E2E8F0", width=1)),
             hovertemplate="Hour %{x}:00 - %{y} Collisions<extra></extra>",
         )])
         fig.update_layout(
-            title="Collision Distribution by Hour of Day (Orange = Night-time 20:00-06:00)",
+            title="Collision Distribution by Hour of Day (Amber = Night-time 20:00-06:00)",
             xaxis=dict(title="Hour of Day (0-23)", tickmode="linear", tick0=0, dtick=2),
             yaxis=dict(title="Number of Accidents"),
         )
@@ -132,7 +135,7 @@ def plot_accidents_by_hour(df: pd.DataFrame) -> go.Figure:
         fig = go.Figure()
         fig.add_annotation(text="Hour feature not present", showarrow=False)
 
-    return apply_dark_theme(fig)
+    return apply_light_theme(fig)
 
 
 def plot_weather_lighting(df: pd.DataFrame) -> go.Figure:
@@ -152,7 +155,7 @@ def plot_weather_lighting(df: pd.DataFrame) -> go.Figure:
         fig = go.Figure()
         fig.add_annotation(text="Weather/Lighting attributes missing", showarrow=False)
 
-    return apply_dark_theme(fig)
+    return apply_light_theme(fig)
 
 
 def plot_pca_2d(pca_coords: np.ndarray, labels: np.ndarray, cluster_metadata: Dict) -> go.Figure:
@@ -174,10 +177,10 @@ def plot_pca_2d(pca_coords: np.ndarray, labels: np.ndarray, cluster_metadata: Di
             mode="markers",
             name=f"Cluster {c_id}: {meta['label']}",
             marker=dict(
-                size=7,
+                size=8,
                 color=meta["color"],
-                opacity=0.75,
-                line=dict(width=0.5, color="#FFFFFF"),
+                opacity=0.8,
+                line=dict(width=1, color="#FFFFFF"),
             ),
             hovertemplate="<b>%{text}</b><br>PC1: %{x:.2f}<br>PC2: %{y:.2f}<extra></extra>",
             text=[f"Cluster {c_id} ({meta['label']})"] * len(sub_df),
@@ -190,12 +193,12 @@ def plot_pca_2d(pca_coords: np.ndarray, labels: np.ndarray, cluster_metadata: Di
             x=[c_x],
             y=[c_y],
             mode="markers+text",
-            marker=dict(size=14, color=meta["color"], symbol="cross", line=dict(width=2, color="#FFFFFF")),
+            marker=dict(size=14, color=meta["color"], symbol="cross", line=dict(width=2, color="#0F172A")),
             name=f"C{c_id} Centroid",
             showlegend=False,
             text=[f"C{c_id}"],
             textposition="top right",
-            textfont=dict(color="#FFFFFF", size=11, family="JetBrains Mono"),
+            textfont=dict(color="#0F172A", size=11, family="JetBrains Mono"),
         ))
 
     fig.update_layout(
@@ -203,13 +206,12 @@ def plot_pca_2d(pca_coords: np.ndarray, labels: np.ndarray, cluster_metadata: Di
         xaxis_title="Principal Component 1 (PC1)",
         yaxis_title="Principal Component 2 (PC2)",
     )
-    return apply_dark_theme(fig)
+    return apply_light_theme(fig)
 
 
 def plot_pca_3d(pca_coords: np.ndarray, labels: np.ndarray, cluster_metadata: Dict) -> go.Figure:
     """Renders interactive 3D Principal Component Projection."""
     if pca_coords.shape[1] < 3:
-        # Fallback to 2D
         return plot_pca_2d(pca_coords, labels, cluster_metadata)
 
     df_pca = pd.DataFrame({
@@ -229,20 +231,20 @@ def plot_pca_3d(pca_coords: np.ndarray, labels: np.ndarray, cluster_metadata: Di
             z=sub_df["PC3"],
             mode="markers",
             name=f"C{c_id}: {meta['label'][:24]}...",
-            marker=dict(size=4, color=meta["color"], opacity=0.8),
+            marker=dict(size=4, color=meta["color"], opacity=0.85),
             hovertemplate=f"<b>Cluster {c_id}</b><br>PC1: %{{x:.2f}}<br>PC2: %{{y:.2f}}<br>PC3: %{{z:.2f}}<extra></extra>",
         ))
 
     fig.update_layout(
         title="3D PCA Dimensionality Reduction Space",
         scene=dict(
-            xaxis=dict(backgroundcolor=COLOR_PANEL, gridcolor=COLOR_BORDER, title="PC1"),
-            yaxis=dict(backgroundcolor=COLOR_PANEL, gridcolor=COLOR_BORDER, title="PC2"),
-            zaxis=dict(backgroundcolor=COLOR_PANEL, gridcolor=COLOR_BORDER, title="PC3"),
+            xaxis=dict(backgroundcolor="#F8FAFC", gridcolor="#E2E8F0", title="PC1"),
+            yaxis=dict(backgroundcolor="#F8FAFC", gridcolor="#E2E8F0", title="PC2"),
+            zaxis=dict(backgroundcolor="#F8FAFC", gridcolor="#E2E8F0", title="PC3"),
         ),
-        paper_bgcolor=COLOR_PANEL,
+        paper_bgcolor="#FFFFFF",
         margin=dict(l=0, r=0, b=0, t=40),
-        legend=dict(font=dict(color=COLOR_TEXT, size=10)),
+        legend=dict(font=dict(color="#0F172A", size=10)),
     )
     return fig
 
@@ -264,7 +266,7 @@ def plot_elbow_curve(curve_df: pd.DataFrame) -> go.Figure:
         xaxis=dict(title="Number of Clusters (K)", tickmode="linear", tick0=2, dtick=1),
         yaxis=dict(title="Inertia / WCSS (Squared Euclidean Distance)"),
     )
-    return apply_dark_theme(fig)
+    return apply_light_theme(fig)
 
 
 def plot_silhouette_curve(curve_df: pd.DataFrame) -> go.Figure:
@@ -284,7 +286,7 @@ def plot_silhouette_curve(curve_df: pd.DataFrame) -> go.Figure:
         xaxis=dict(title="Number of Clusters (K)", tickmode="linear", tick0=2, dtick=1),
         yaxis=dict(title="Mean Silhouette Coefficient"),
     )
-    return apply_dark_theme(fig)
+    return apply_light_theme(fig)
 
 
 def plot_davies_bouldin_curve(curve_df: pd.DataFrame) -> go.Figure:
@@ -295,8 +297,8 @@ def plot_davies_bouldin_curve(curve_df: pd.DataFrame) -> go.Figure:
         y=curve_df["Davies_Bouldin_Index"],
         mode="lines+markers",
         name="Davies-Bouldin Index",
-        line=dict(color="#A855F7", width=3),
-        marker=dict(size=9, color="#FFFFFF", line=dict(width=2, color="#A855F7")),
+        line=dict(color="#7C3AED", width=3),
+        marker=dict(size=9, color="#FFFFFF", line=dict(width=2, color="#7C3AED")),
         hovertemplate="K = %{x}<br>DB Index: %{y:.4f}<extra></extra>",
     ))
     fig.update_layout(
@@ -304,7 +306,7 @@ def plot_davies_bouldin_curve(curve_df: pd.DataFrame) -> go.Figure:
         xaxis=dict(title="Number of Clusters (K)", tickmode="linear", tick0=2, dtick=1),
         yaxis=dict(title="Davies-Bouldin Index"),
     )
-    return apply_dark_theme(fig)
+    return apply_light_theme(fig)
 
 
 def plot_sample_silhouettes(sample_sils: np.ndarray, labels: np.ndarray, cluster_metadata: Dict) -> go.Figure:
@@ -349,7 +351,7 @@ def plot_sample_silhouettes(sample_sils: np.ndarray, labels: np.ndarray, cluster
         xaxis=dict(title="Silhouette Coefficient Values", range=[-0.2, 1.0]),
         yaxis=dict(title="Cluster Samples Thickness", showticklabels=False),
     )
-    return apply_dark_theme(fig)
+    return apply_light_theme(fig)
 
 
 def plot_hour_weekday_heatmap(df: pd.DataFrame) -> go.Figure:
@@ -364,10 +366,10 @@ def plot_hour_weekday_heatmap(df: pd.DataFrame) -> go.Figure:
             x=[f"{h:02d}:00" for h in cross_tab.columns],
             y=cross_tab.index.tolist(),
             colorscale=[
-                [0.0, "#0B1220"],
-                [0.3, "#0E7490"],
-                [0.7, "#22D3EE"],
-                [1.0, "#F59E0B"],
+                [0.0, "#F0F9FF"],
+                [0.3, "#BAE6FD"],
+                [0.6, "#0284C7"],
+                [1.0, "#D97706"],
             ],
             hovertemplate="Day: %{y}<br>Time: %{x}<br>Accidents: %{z}<extra></extra>",
         ))
@@ -380,7 +382,7 @@ def plot_hour_weekday_heatmap(df: pd.DataFrame) -> go.Figure:
         fig = go.Figure()
         fig.add_annotation(text="Hour or Day_of_Week feature missing", showarrow=False)
 
-    return apply_dark_theme(fig)
+    return apply_light_theme(fig)
 
 
 def plot_cluster_radar(cluster_metadata: Dict) -> go.Figure:
@@ -392,9 +394,7 @@ def plot_cluster_radar(cluster_metadata: Dict) -> go.Figure:
 
     fig = go.Figure()
 
-    # Normalization helper
     for c_id, meta in cluster_metadata.items():
-        # Scale values to 0-100 for radar consistency
         vals = [
             meta["fatality_rate"],
             meta["injury_rate"],
@@ -416,11 +416,11 @@ def plot_cluster_radar(cluster_metadata: Dict) -> go.Figure:
 
     fig.update_layout(
         polar=dict(
-            radialaxis=dict(visible=True, range=[0, 100], gridcolor=COLOR_BORDER, tickfont=dict(color="#64748B")),
-            angularaxis=dict(gridcolor=COLOR_BORDER, tickfont=dict(color=COLOR_TEXT, size=11)),
-            bgcolor=COLOR_PANEL,
+            radialaxis=dict(visible=True, range=[0, 100], gridcolor="#E2E8F0", tickfont=dict(color="#64748B")),
+            angularaxis=dict(gridcolor="#E2E8F0", tickfont=dict(color="#0F172A", size=11)),
+            bgcolor="#FFFFFF",
         ),
-        paper_bgcolor=COLOR_PANEL,
+        paper_bgcolor="#FFFFFF",
         title="Multi-Dimensional Cluster Safety Profile (Normalized Traits)",
     )
     return fig
@@ -439,16 +439,16 @@ def plot_feature_deviations(deviation_df: pd.DataFrame, cluster_id: int, cluster
         x=sub_df["Z_Score_Deviation"],
         y=sub_df["Feature"],
         orientation="h",
-        marker=dict(color=colors, line=dict(color=COLOR_BORDER, width=1)),
+        marker=dict(color=colors, line=dict(color="#E2E8F0", width=1)),
         hovertemplate="Feature: %{y}<br>Z-Score Deviation: %{x:.2f} std dev<br>Cluster Mean: %{customdata[0]}<br>Global Mean: %{customdata[1]}<extra></extra>",
         customdata=sub_df[["Cluster_Mean", "Global_Mean"]].values,
     ))
 
-    fig.add_vline(x=0, line_color="#64748B", line_width=1.5)
+    fig.add_vline(x=0, line_color="#94A3B8", line_width=1.5)
 
     fig.update_layout(
         title=f"Feature Z-Score Deviations: Cluster {cluster_id} ({cluster_label})<br><sub>Deviation from overall dataset mean (Descriptive Profiling, NOT Causal Importance)</sub>",
         xaxis_title="Standard Deviations from Global Dataset Mean (Z-Score)",
         yaxis_title="Safety / Operational Feature",
     )
-    return apply_dark_theme(fig)
+    return apply_light_theme(fig)

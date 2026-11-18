@@ -54,9 +54,9 @@ with st.sidebar:
     # Sidebar Logo & Title
     st.markdown("""
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
-        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #0284C7 0%, #22D3EE 100%); 
+        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 100%); 
                     border-radius: 10px; display: flex; align-items: center; justify-content: center; 
-                    box-shadow: 0 4px 14px rgba(34, 211, 238, 0.35);">
+                    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                 <path d="M12 8v4"/>
@@ -64,8 +64,8 @@ with st.sidebar:
             </svg>
         </div>
         <div>
-            <div style="font-weight: 800; font-size: 18px; color: #FFFFFF; letter-spacing: -0.3px;">ROADGUARD AI</div>
-            <div style="font-size: 11px; color: #22D3EE; font-weight: 500;">Safety Intelligence</div>
+            <div style="font-weight: 800; font-size: 18px; color: #0F172A; letter-spacing: -0.3px;">ROADGUARD AI</div>
+            <div style="font-size: 11px; color: #0284C7; font-weight: 600;">Safety Intelligence</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -91,14 +91,14 @@ with st.sidebar:
     sil_score = st.session_state.get("clustering_results", {}).get("silhouette", 0.0)
 
     st.markdown(f"""
-    <div style="background: #131E30; border: 1px solid #1E293B; border-radius: 8px; padding: 12px; font-size: 12px; margin-bottom: 12px;">
-        <div style="color: #94A3B8; margin-bottom: 4px;">ACTIVE DATASET</div>
-        <div style="font-weight: 700; color: #FFFFFF; margin-bottom: 6px; word-break: break-word;">{ds_name}</div>
-        <div style="color: #CBD5E1; line-height: 1.5;">
+    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px; font-size: 12px; margin-bottom: 12px;">
+        <div style="color: #64748B; font-weight: 700; margin-bottom: 4px; font-size: 11px;">ACTIVE DATASET</div>
+        <div style="font-weight: 800; color: #0F172A; margin-bottom: 6px; word-break: break-word;">{ds_name}</div>
+        <div style="color: #334155; line-height: 1.5;">
             &bull; <strong>Records:</strong> {total_recs:,}<br/>
             &bull; <strong>Clusters (K):</strong> {k_val}<br/>
             &bull; <strong>Silhouette:</strong> {sil_score:.4f}<br/>
-            &bull; <strong>Status:</strong> <span style="color: #10B981; font-weight: 600;">Operational</span>
+            &bull; <strong>Status:</strong> <span style="color: #059669; font-weight: 700;">Operational</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -115,7 +115,7 @@ with st.sidebar:
 
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     st.markdown("""
-    <div style="font-size: 11px; color: #64748B; text-align: center; border-top: 1px solid #1E293B; padding-top: 10px;">
+    <div style="font-size: 11px; color: #64748B; text-align: center; border-top: 1px solid #E2E8F0; padding-top: 10px;">
         Academic Project &bull; Unsupervised ML<br/>
         Decision Support System
     </div>

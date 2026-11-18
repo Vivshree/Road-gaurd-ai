@@ -21,10 +21,10 @@ from src.styles import render_kpi
 def render_upload_center():
     st.markdown("""
     <div style="margin-bottom: 20px;">
-        <h2 style="font-size: 22px; font-weight: 800; color: #FFFFFF; margin-bottom: 4px;">
+        <h2 style="font-size: 22px; font-weight: 800; color: #0F172A; margin-bottom: 4px;">
             Dataset Upload Center &amp; Ingestion Pipeline
         </h2>
-        <div style="color: #94A3B8; font-size: 13.5px;">
+        <div style="color: #64748B; font-size: 13.5px;">
             Upload real-world collision CSV or Excel records, map columns to canonical safety schemas, 
             configure pre-processing, and execute unsupervised clustering.
         </div>
@@ -52,15 +52,15 @@ def render_upload_center():
     with st.container():
         st.markdown("""
         <div class="upload-box">
-            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 8px;">
+            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 8px;">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="17 8 12 3 7 8"/>
                 <line x1="12" y1="3" x2="12" y2="15"/>
             </svg>
-            <div style="font-weight: 700; font-size: 16px; color: #FFFFFF; margin-bottom: 4px;">
+            <div style="font-weight: 700; font-size: 16px; color: #0F172A; margin-bottom: 4px;">
                 Upload Real-World Collision Dataset
             </div>
-            <div style="color: #94A3B8; font-size: 13px;">
+            <div style="color: #64748B; font-size: 13px;">
                 Drag &amp; drop .CSV or .XLSX / .XLS files (up to 200MB)
             </div>
         </div>

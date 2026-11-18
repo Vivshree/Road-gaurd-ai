@@ -8,32 +8,32 @@ APP_TAGLINE = "Road Safety Intelligence & Accident Hotspot Analytics"
 APP_SUBTITLE = "Unsupervised Machine Learning Decision-Support System"
 ACADEMIC_FOOTER = "Academic Project | Unsupervised Machine Learning | Exploratory Decision-Support"
 
-# Color Palette (Dark Command Center Theme)
-COLOR_BG = "#0B1220"
-COLOR_PANEL = "#131E30"
-COLOR_PANEL_ALT = "#1A2740"
-COLOR_ACCENT_CYAN = "#22D3EE"
-COLOR_ACCENT_ORANGE = "#F59E0B"
-COLOR_RED_SEVERE = "#EF4444"
-COLOR_GREEN_MILD = "#10B981"
-COLOR_YELLOW_MOD = "#EAB308"
-COLOR_TEXT = "#E2E8F0"
-COLOR_MUTED = "#94A3B8"
-COLOR_BORDER = "#1E293B"
-COLOR_CARD_HOVER = "#24344D"
+# Color Palette (Modern Clean Light Theme)
+COLOR_BG = "#F8FAFC"
+COLOR_PANEL = "#FFFFFF"
+COLOR_PANEL_ALT = "#F1F5F9"
+COLOR_ACCENT_CYAN = "#0284C7"
+COLOR_ACCENT_ORANGE = "#D97706"
+COLOR_RED_SEVERE = "#DC2626"
+COLOR_GREEN_MILD = "#059669"
+COLOR_YELLOW_MOD = "#CA8A04"
+COLOR_TEXT = "#0F172A"
+COLOR_MUTED = "#64748B"
+COLOR_BORDER = "#E2E8F0"
+COLOR_CARD_HOVER = "#F8FAFC"
 
-# Distinct palette for K-Means and Agglomerative clusters
+# Distinct high-contrast palette for K-Means and Agglomerative clusters
 CLUSTER_COLORS = [
-    "#22D3EE",  # Neon Cyan
-    "#F59E0B",  # Warning Amber
-    "#EF4444",  # Severe Red
-    "#10B981",  # Emerald Green
-    "#A855F7",  # Purple
-    "#EC4899",  # Neon Pink
-    "#38BDF8",  # Sky Blue
-    "#14B8A6",  # Teal
-    "#FB923C",  # Vibrant Orange
-    "#818CF8",  # Indigo
+    "#0284C7",  # Deep Sky Blue
+    "#D97706",  # Amber Warning
+    "#DC2626",  # Crimson Severe
+    "#059669",  # Emerald Green
+    "#7C3AED",  # Royal Violet
+    "#DB2777",  # Vivid Rose
+    "#2563EB",  # Classic Blue
+    "#0D9488",  # Deep Teal
+    "#EA580C",  # Vibrant Orange
+    "#9333EA",  # Purple
 ]
 
 # Canonical Schema Definitions

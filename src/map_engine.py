@@ -115,20 +115,20 @@ class MapEngine:
                     COLOR_ACCENT_ORANGE if severity == "Serious" else COLOR_GREEN_MILD
                 )
 
-            # Rich dark HTML popup
+            # Rich light HTML popup
             popup_html = f"""
-            <div style="font-family: 'Plus Jakarta Sans', sans-serif; background: #0B1220; color: #F1F5F9; 
-                        padding: 12px 14px; border-radius: 8px; border: 1px solid #24354D; min-width: 220px; font-size: 12px;">
-                <div style="font-weight: 700; font-size: 13px; color: #22D3EE; margin-bottom: 4px; border-bottom: 1px solid #24354D; padding-bottom: 4px;">
+            <div style="font-family: 'Plus Jakarta Sans', sans-serif; background: #FFFFFF; color: #0F172A; 
+                        padding: 12px 14px; border-radius: 8px; border: 1px solid #E2E8F0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 220px; font-size: 12px;">
+                <div style="font-weight: 700; font-size: 13px; color: #0284C7; margin-bottom: 4px; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px;">
                     {acc_id}
                 </div>
-                <div style="margin: 4px 0;"><strong>Severity:</strong> <span style="color: {'#EF4444' if severity=='Fatal' else ('#F59E0B' if severity=='Serious' else '#10B981')};">{severity}</span></div>
+                <div style="margin: 4px 0;"><strong>Severity:</strong> <span style="color: {'#DC2626' if severity=='Fatal' else ('#D97706' if severity=='Serious' else '#059669')}; font-weight: 700;">{severity}</span></div>
                 <div style="margin: 4px 0;"><strong>Date &amp; Time:</strong> {date_str} {time_str}</div>
                 <div style="margin: 4px 0;"><strong>Roadway:</strong> {road_type} ({speed} km/h)</div>
                 <div style="margin: 4px 0;"><strong>Vehicle:</strong> {vehicle}</div>
                 <div style="margin: 4px 0;"><strong>Casualties:</strong> {casualties} (Fatalities: {fatalities})</div>
                 <div style="margin: 4px 0;"><strong>Atmosphere:</strong> {weather}</div>
-                <div style="margin-top: 6px; padding-top: 4px; border-top: 1px solid #24354D; color: {color}; font-weight: 600;">
+                <div style="margin-top: 6px; padding-top: 4px; border-top: 1px solid #E2E8F0; color: {color}; font-weight: 700;">
                     {f"Cluster {c_id}: {cluster_label}" if has_cluster_col else "Hotspot Point"}
                 </div>
             </div>
@@ -150,15 +150,15 @@ class MapEngine:
             legend_items = "".join([
                 f'<div style="display: flex; align-items: center; gap: 8px; margin: 4px 0;">'
                 f'<span style="background: {meta["color"]}; width: 12px; height: 12px; border-radius: 50%; display: inline-block;"></span>'
-                f'<span style="font-size: 11px; color: #E2E8F0;">C{c_id}: {meta["label"][:22]}</span>'
+                f'<span style="font-size: 11px; color: #1E293B; font-weight: 600;">C{c_id}: {meta["label"][:22]}</span>'
                 f'</div>'
                 for c_id, meta in cluster_metadata.items()
             ])
             legend_html = f"""
-            <div style="position: fixed; bottom: 25px; right: 25px; z-index: 9999; background: rgba(11, 18, 32, 0.9);
-                        padding: 10px 14px; border-radius: 8px; border: 1px solid #24354D; font-family: sans-serif;
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.5); max-width: 280px;">
-                <div style="font-weight: 700; font-size: 12px; color: #22D3EE; margin-bottom: 6px; text-transform: uppercase;">
+            <div style="position: fixed; bottom: 25px; right: 25px; z-index: 9999; background: rgba(255, 255, 255, 0.95);
+                        padding: 10px 14px; border-radius: 8px; border: 1px solid #E2E8F0; font-family: sans-serif;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.12); max-width: 280px;">
+                <div style="font-weight: 700; font-size: 12px; color: #0284C7; margin-bottom: 6px; text-transform: uppercase;">
                     Cluster Legend
                 </div>
                 {legend_items}

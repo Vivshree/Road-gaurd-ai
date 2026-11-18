@@ -16,10 +16,10 @@ from src.styles import render_kpi
 def render_cluster_explorer():
     st.markdown("""
     <div style="margin-bottom: 20px;">
-        <h2 style="font-size: 22px; font-weight: 800; color: #FFFFFF; margin-bottom: 4px;">
+        <h2 style="font-size: 22px; font-weight: 800; color: #0F172A; margin-bottom: 4px;">
             Accident Cluster Explorer &amp; Semantic Profiler
         </h2>
-        <div style="color: #94A3B8; font-size: 13.5px;">
+        <div style="color: #64748B; font-size: 13.5px;">
             Unsupervised discovery of latent accident patterns. Adjust cluster granularity (K), 
             inspect data-driven profiles, and download cluster assignments.
         </div>
@@ -90,13 +90,13 @@ def render_cluster_explorer():
                 <div style="font-weight: 800; font-size: 14px; color: {meta['color']}; margin-bottom: 2px;">
                     Cluster {c_id}
                 </div>
-                <div style="font-size: 11.5px; font-weight: 700; color: #FFFFFF; min-height: 32px;">
+                <div style="font-size: 12px; font-weight: 700; color: #0F172A; min-height: 32px;">
                     {meta['label']}
                 </div>
-                <div style="font-size: 20px; font-weight: 800; color: #FFFFFF; font-family: monospace; margin: 6px 0;">
-                    {meta['size']:,} <span style="font-size: 11px; font-weight: 500; color: #94A3B8;">({meta['pct']}%)</span>
+                <div style="font-size: 20px; font-weight: 800; color: #0F172A; font-family: monospace; margin: 6px 0;">
+                    {meta['size']:,} <span style="font-size: 11px; font-weight: 600; color: #64748B;">({meta['pct']}%)</span>
                 </div>
-                <div style="font-size: 11px; color: #CBD5E1; line-height: 1.4;">
+                <div style="font-size: 11.5px; color: #334155; line-height: 1.5;">
                     &bull; Fatality: <strong>{meta['fatality_rate']}%</strong><br/>
                     &bull; Night-time: <strong>{meta['night_pct']}%</strong><br/>
                     &bull; Avg Speed: <strong>{meta['avg_speed']} km/h</strong><br/>

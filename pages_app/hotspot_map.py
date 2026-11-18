@@ -12,10 +12,10 @@ from src.map_engine import MapEngine
 def render_hotspot_map():
     st.markdown("""
     <div style="margin-bottom: 20px;">
-        <h2 style="font-size: 22px; font-weight: 800; color: #FFFFFF; margin-bottom: 4px;">
+        <h2 style="font-size: 22px; font-weight: 800; color: #0F172A; margin-bottom: 4px;">
             Geographical Accident Hotspot Intelligence Map
         </h2>
-        <div style="color: #94A3B8; font-size: 13.5px;">
+        <div style="color: #64748B; font-size: 13.5px;">
             Interactive spatial mapping displaying cluster-assigned accident coordinates, density heatmaps, and forensic popups.
         </div>
     </div>

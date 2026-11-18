@@ -15,10 +15,10 @@ from src.config import CLUSTER_COLORS, COLOR_PANEL
 def render_pattern_analysis():
     st.markdown("""
     <div style="margin-bottom: 20px;">
-        <h2 style="font-size: 22px; font-weight: 800; color: #FFFFFF; margin-bottom: 4px;">
+        <h2 style="font-size: 22px; font-weight: 800; color: #0F172A; margin-bottom: 4px;">
             Accident Pattern &amp; Feature Contribution Analysis
         </h2>
-        <div style="color: #94A3B8; font-size: 13.5px;">
+        <div style="color: #64748B; font-size: 13.5px;">
             Examine temporal concentrations, roadway infrastructure interactions, and descriptive feature deviation profiles.
         </div>
     </div>

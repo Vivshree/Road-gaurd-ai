@@ -11,10 +11,10 @@ from src.report_engine import ReportEngine
 def render_report_generator():
     st.markdown("""
     <div style="margin-bottom: 20px;">
-        <h2 style="font-size: 22px; font-weight: 800; color: #FFFFFF; margin-bottom: 4px;">
+        <h2 style="font-size: 22px; font-weight: 800; color: #0F172A; margin-bottom: 4px;">
             Academic Report Generator &amp; Data Export Center
         </h2>
-        <div style="color: #94A3B8; font-size: 13.5px;">
+        <div style="color: #64748B; font-size: 13.5px;">
             Compile presentation-ready PDF academic research reports and export processed collision data with cluster assignments.
         </div>
     </div>
@@ -42,10 +42,10 @@ def render_report_generator():
 
         st.markdown(f"""
         <div class="dashboard-panel" style="padding: 16px 20px;">
-            <div style="font-size: 14px; font-weight: 700; color: #FFFFFF; margin-bottom: 8px;">
+            <div style="font-size: 14px; font-weight: 700; color: #0F172A; margin-bottom: 8px;">
                 Report Document Metadata
             </div>
-            <div style="font-size: 12px; color: #CBD5E1; line-height: 1.6;">
+            <div style="font-size: 12px; color: #334155; line-height: 1.6;">
                 &bull; <strong>Title:</strong> ROADGUARD AI &mdash; Research &amp; Decision-Support Audit<br/>
                 &bull; <strong>Dataset:</strong> {dataset_name} ({len(df):,} records)<br/>
                 &bull; <strong>Algorithm:</strong> {km_res.get('algorithm', 'K-Means')} (K = {km_res.get('n_clusters', 4)})<br/>
@@ -130,10 +130,10 @@ def render_report_generator():
     with viva_col1:
         st.markdown("""
         <div class="dashboard-panel">
-            <div style="color: #22D3EE; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
+            <div style="color: #0284C7; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
                 Q1: Why Unsupervised Learning instead of Supervised Prediction?
             </div>
-            <div style="font-size: 12.5px; color: #CBD5E1; line-height: 1.5;">
+            <div style="font-size: 12.5px; color: #334155; line-height: 1.5;">
                 In road safety intelligence, true causal ground-truth labels do not exist for future accidents. 
                 Supervised models can predict historical outcomes but cannot discover novel, multi-variable collision 
                 archetypes across unclassified spatial corridors. Unsupervised clustering partitions the multi-dimensional 
@@ -144,10 +144,10 @@ def render_report_generator():
 
         st.markdown("""
         <div class="dashboard-panel">
-            <div style="color: #F59E0B; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
+            <div style="color: #D97706; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
                 Q2: Why does standard K-Means require Euclidean distance?
             </div>
-            <div style="font-size: 12.5px; color: #CBD5E1; line-height: 1.5;">
+            <div style="font-size: 12.5px; color: #334155; line-height: 1.5;">
                 Standard Lloyd's K-Means minimizes squared Euclidean distance (L2 norm). In L2 space, the cluster 
                 centroid that minimizes within-cluster variance is analytically proven to be the arithmetic mean. 
                 Using Manhattan distance (L1 norm) requires the geometric median (as in K-Medians / PAM), otherwise 
@@ -159,10 +159,10 @@ def render_report_generator():
     with viva_col2:
         st.markdown("""
         <div class="dashboard-panel">
-            <div style="color: #10B981; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
+            <div style="color: #059669; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
                 Q3: How are Silhouette and Davies-Bouldin Scores interpreted?
             </div>
-            <div style="font-size: 12.5px; color: #CBD5E1; line-height: 1.5;">
+            <div style="font-size: 12.5px; color: #334155; line-height: 1.5;">
                 <strong>Silhouette Score [-1 to +1]:</strong> Computes $(b - a) / \\max(a, b)$, where $a$ is mean intra-cluster distance and $b$ is nearest-cluster distance. Higher values indicate dense, well-separated clusters.<br/>
                 <strong>Davies-Bouldin Index:</strong> Ratio of within-cluster scatter to between-cluster separation. Lower values signify superior partition compactness.
             </div>
@@ -171,10 +171,10 @@ def render_report_generator():
 
         st.markdown("""
         <div class="dashboard-panel">
-            <div style="color: #EF4444; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
+            <div style="color: #DC2626; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
                 Q4: What are the primary academic limitations of this system?
             </div>
-            <div style="font-size: 12.5px; color: #CBD5E1; line-height: 1.5;">
+            <div style="font-size: 12.5px; color: #334155; line-height: 1.5;">
                 <strong>Reporting &amp; Geographical Bias:</strong> Minor accidents are heavily underreported compared to fatal incidents. 
                 Clustering assumes spherical geometries in K-Means, which may fragment curved roadways. Most importantly, 
                 cluster correlations provide decision-support hypotheses, <strong>not causal proof</strong>.

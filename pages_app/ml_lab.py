@@ -19,10 +19,10 @@ from src.profiling import ClusterProfiler
 def render_ml_lab():
     st.markdown("""
     <div style="margin-bottom: 20px;">
-        <h2 style="font-size: 22px; font-weight: 800; color: #FFFFFF; margin-bottom: 4px;">
+        <h2 style="font-size: 22px; font-weight: 800; color: #0F172A; margin-bottom: 4px;">
             Machine Learning Laboratory &amp; Academic Benchmark
         </h2>
-        <div style="color: #94A3B8; font-size: 13.5px;">
+        <div style="color: #64748B; font-size: 13.5px;">
             Rigorous unsupervised learning experimental suite. Compare clustering algorithms, evaluate mathematical distance formulations,
             and inspect 2D/3D Principal Component projections.
         </div>
@@ -174,7 +174,7 @@ def render_ml_lab():
     with tab_curves:
         st.markdown("### Hyperparameter Optimization Curves ($K = 2$ to $10$)")
         st.markdown("""
-        <div style="color: #94A3B8; font-size: 13px; margin-bottom: 12px;">
+        <div style="color: #64748B; font-size: 13px; margin-bottom: 12px;">
             Evaluating clustering performance across multiple granularities to identify optimal cluster separation.
         </div>
         """, unsafe_allow_html=True)

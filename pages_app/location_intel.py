@@ -14,10 +14,10 @@ from src.config import CLUSTER_COLORS
 def render_location_intel():
     st.markdown("""
     <div style="margin-bottom: 20px;">
-        <h2 style="font-size: 22px; font-weight: 800; color: #FFFFFF; margin-bottom: 4px;">
+        <h2 style="font-size: 22px; font-weight: 800; color: #0F172A; margin-bottom: 4px;">
             Location Intelligence &amp; Municipal Decision Support
         </h2>
-        <div style="color: #94A3B8; font-size: 13.5px;">
+        <div style="color: #64748B; font-size: 13.5px;">
             Deep-dive into specific city or corridor nodes. Compare local patterns against peer locations and evaluate data-supported safety measures.
         </div>
     </div>
@@ -155,10 +155,10 @@ def render_location_intel():
     with rec_cols[0]:
         st.markdown("""
         <div class="dashboard-panel" style="min-height: 180px;">
-            <div style="color: #22D3EE; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
+            <div style="color: #0284C7; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
                 💡 Illumination &amp; Nocturnal Interventions
             </div>
-            <div style="font-size: 12.5px; color: #CBD5E1; line-height: 1.5;">
+            <div style="font-size: 12.5px; color: #334155; line-height: 1.5;">
         """, unsafe_allow_html=True)
         if night_pct >= 40.0:
             st.write(f"- Night-time accidents account for **{night_pct}%** of local occurrences.")
@@ -172,10 +172,10 @@ def render_location_intel():
     with rec_cols[1]:
         st.markdown("""
         <div class="dashboard-panel" style="min-height: 180px;">
-            <div style="color: #F59E0B; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
+            <div style="color: #D97706; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
                 🌧️ Pavement &amp; Weather Resilience
             </div>
-            <div style="font-size: 12.5px; color: #CBD5E1; line-height: 1.5;">
+            <div style="font-size: 12.5px; color: #334155; line-height: 1.5;">
         """, unsafe_allow_html=True)
         if weather_pct >= 25.0:
             st.write(f"- Adverse weather correlates with **{weather_pct}%** of collisions in this node.")
@@ -189,10 +189,10 @@ def render_location_intel():
     with rec_cols[2]:
         st.markdown("""
         <div class="dashboard-panel" style="min-height: 180px;">
-            <div style="color: #EF4444; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
+            <div style="color: #DC2626; font-weight: 700; font-size: 14px; margin-bottom: 6px;">
                 ⚡ Speed Calming &amp; Enforcement
             </div>
-            <div style="font-size: 12.5px; color: #CBD5E1; line-height: 1.5;">
+            <div style="font-size: 12.5px; color: #334155; line-height: 1.5;">
         """, unsafe_allow_html=True)
         if avg_speed >= 70.0:
             st.write(f"- Average corridor speed limit is elevated (**{avg_speed} km/h**).")
