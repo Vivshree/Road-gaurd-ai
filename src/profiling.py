@@ -6,10 +6,21 @@ standardized feature deviations.
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from src.config import CLUSTER_COLORS
 
 class ClusterProfiler:
+    @staticmethod
+    def _safe_mode(series: Optional[pd.Series], fallback: str = "Mixed") -> str:
+        """Safely extracts the statistical mode without raising IndexError on empty or all-null series."""
+        if series is None or len(series) == 0:
+            return fallback
+        non_null = series.dropna()
+        if len(non_null) == 0:
+            return fallback
+        modes = non_null.mode()
+        return str(modes.iloc[0]) if len(modes) > 0 else fallback
+
     @staticmethod
     def generate_cluster_profiles(df: pd.DataFrame, cluster_col: str = "Cluster") -> Tuple[pd.DataFrame, Dict[int, Dict]]:
         """
@@ -57,9 +68,9 @@ class ClusterProfiler:
                 c_df["Speed_Limit"].mean() if "Speed_Limit" in c_df.columns else 50.0, 1
             )
 
-            top_road = c_df["Road_Type"].mode()[0] if ("Road_Type" in c_df.columns and not c_df["Road_Type"].empty) else "Mixed"
-            top_weather = c_df["Weather"].mode()[0] if ("Weather" in c_df.columns and not c_df["Weather"].empty) else "Clear"
-            top_vehicle = c_df["Vehicle_Type"].mode()[0] if ("Vehicle_Type" in c_df.columns and not c_df["Vehicle_Type"].empty) else "General"
+            top_road = ClusterProfiler._safe_mode(c_df.get("Road_Type"), "Mixed")
+            top_weather = ClusterProfiler._safe_mode(c_df.get("Weather"), "Clear")
+            top_vehicle = ClusterProfiler._safe_mode(c_df.get("Vehicle_Type"), "General")
 
             # Synthesize descriptive data-driven label
             label, risk_level = ClusterProfiler._synthesize_label(

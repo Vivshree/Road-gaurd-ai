@@ -183,7 +183,22 @@ class AccidentPreprocessor:
         return df
 
     def _impute_numerical_columns(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Handles missing numerical data safely."""
+        """Handles missing numerical data safely with robust non-NaN fallbacks."""
+        fallback_defaults = {
+            "Number_of_Vehicles": 1.0,
+            "Number_of_Casualties": 1.0,
+            "Number_of_Fatalities": 0.0,
+            "Number_of_Injuries": 0.0,
+            "Speed_Limit": 50.0,
+            "Hour": 12.0,
+        }
+
+        # Safe coordinate conversion if present
+        if "Latitude" in df.columns:
+            df["Latitude"] = pd.to_numeric(df["Latitude"], errors="coerce")
+        if "Longitude" in df.columns:
+            df["Longitude"] = pd.to_numeric(df["Longitude"], errors="coerce")
+
         target_numerics = [
             "Number_of_Vehicles", "Number_of_Casualties", 
             "Number_of_Fatalities", "Number_of_Injuries", 
@@ -191,28 +206,25 @@ class AccidentPreprocessor:
         ]
 
         for col in target_numerics:
+            default_val = fallback_defaults.get(col, 1.0)
             if col in df.columns:
                 df[col] = pd.to_numeric(df[col], errors="coerce")
                 if df[col].isnull().any():
                     if self.impute_strategy == "mean":
-                        val = df[col].mean()
+                        calc_val = df[col].mean()
                     elif self.impute_strategy == "zero":
-                        val = 0
+                        calc_val = 0.0
                     else:  # median
-                        val = df[col].median()
-                    df[col] = df[col].fillna(val)
-                    self.audit_log.append(f"Imputed missing values in '{col}' using {self.impute_strategy} ({val:.1f}).")
+                        calc_val = df[col].median()
+
+                    # Guard against all-NaN columns where mean/median is NaN
+                    if pd.isna(calc_val):
+                        calc_val = default_val
+
+                    df[col] = df[col].fillna(calc_val)
+                    self.audit_log.append(f"Imputed missing values in '{col}' using {self.impute_strategy} ({float(calc_val):.1f}).")
             else:
                 # Default fallback values if column is missing from dataset
-                if col == "Number_of_Vehicles":
-                    df[col] = 1
-                elif col == "Number_of_Casualties":
-                    df[col] = 1
-                elif col == "Number_of_Fatalities":
-                    df[col] = 0
-                elif col == "Number_of_Injuries":
-                    df[col] = 1
-                elif col == "Speed_Limit":
-                    df[col] = 50.0
+                df[col] = default_val
 
         return df

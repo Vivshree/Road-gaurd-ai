@@ -221,15 +221,55 @@ def inject_custom_styles():
         border: 1px solid #A7F3D0;
     }
 
-    /* Drag & Drop Upload Container */
+    /* Interactive Drag & Drop Upload Container */
+    [data-testid="stFileUploaderDropzone"] {
+        border: 2px dashed #0284C7 !important;
+        background-color: #F8FAFC !important;
+        border-radius: 14px !important;
+        padding: 28px 20px !important;
+        text-align: center !important;
+        transition: all 0.2s ease-in-out !important;
+        cursor: pointer !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    [data-testid="stFileUploaderDropzone"]:hover {
+        background-color: #F0F9FF !important;
+        border-color: #0369A1 !important;
+        box-shadow: 0 4px 16px rgba(2, 132, 199, 0.12) !important;
+    }
+
+    [data-testid="stFileUploaderDropzone"] button {
+        background: #0284C7 !important;
+        color: #FFFFFF !important;
+        border-radius: 8px !important;
+        font-weight: 700 !important;
+        border: none !important;
+        padding: 6px 20px !important;
+        transition: background 0.2s ease !important;
+    }
+
+    [data-testid="stFileUploaderDropzone"] button:hover {
+        background: #0369A1 !important;
+    }
+
+    [data-testid="stFileUploaderDropzone"] span {
+        color: #334155 !important;
+        font-weight: 600 !important;
+    }
+
+    [data-testid="stFileUploaderDropzone"] small {
+        color: #64748B !important;
+    }
+
     .upload-box {
         border: 2px dashed #BAE6FD;
         background: #FFFFFF;
         border-radius: 16px;
-        padding: 32px 24px;
+        padding: 24px;
         text-align: center;
         transition: all 0.2s ease;
-        margin-bottom: 24px;
+        margin-bottom: 16px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     }
 

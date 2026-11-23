@@ -13,29 +13,67 @@ from src.config import CANONICAL_COLUMNS, COLUMN_ALIASES
 
 def read_uploaded_file(file_obj, filename: str) -> Tuple[Optional[pd.DataFrame], Optional[str]]:
     """
-    Safely reads CSV or Excel files from Streamlit's UploadedFile object with multi-encoding fallback.
+    Safely reads CSV or Excel files from Streamlit's UploadedFile object with multi-encoding fallback,
+    automatic delimiter detection (comma, semicolon, tab, pipe), and robust whitespace cleanup.
     Returns (DataFrame, error_message).
     """
     try:
+        # Retrieve raw bytes safely from Streamlit UploadedFile or file-like object
+        if hasattr(file_obj, "getvalue"):
+            raw_bytes = file_obj.getvalue()
+        elif hasattr(file_obj, "read"):
+            file_obj.seek(0)
+            raw_bytes = file_obj.read()
+            if isinstance(raw_bytes, str):
+                raw_bytes = raw_bytes.encode("utf-8")
+        else:
+            return None, "Invalid file stream: unable to read raw bytes from upload."
+
+        if not raw_bytes or len(raw_bytes) == 0:
+            return None, f"Uploaded file '{filename}' is empty (0 bytes)."
+
         ext = os.path.splitext(filename)[1].lower()
+
         if ext == ".csv":
-            # Multi-encoding attempt
             encodings = ["utf-8", "utf-8-sig", "latin1", "cp1252", "iso-8859-1"]
+            delimiters = [None, ",", ";", "\t", "|"]
+            
             for enc in encodings:
-                try:
-                    file_obj.seek(0)
-                    df = pd.read_csv(file_obj, encoding=enc)
-                    return df, None
-                except (UnicodeDecodeError, pd.errors.ParserError):
-                    continue
-            return None, f"Could not parse CSV file '{filename}'. Encoding or formatting unsupported."
+                for sep in delimiters:
+                    try:
+                        bio = io.BytesIO(raw_bytes)
+                        if sep is None:
+                            df = pd.read_csv(bio, encoding=enc, sep=None, engine="python", on_bad_lines="skip")
+                        else:
+                            df = pd.read_csv(bio, encoding=enc, sep=sep, on_bad_lines="skip")
+
+                        # If parsed into a single column but contains common delimiters, try next delimiter
+                        if len(df.columns) == 1 and any(d in str(df.columns[0]) for d in [";", "\t", "|", ","]):
+                            continue
+
+                        if len(df.columns) > 0 and len(df) > 0:
+                            # Clean up column names (strip whitespace and special linebreaks)
+                            df.columns = [str(c).strip().replace("\r", "").replace("\n", "") for c in df.columns]
+                            return df, None
+                    except Exception:
+                        continue
+
+            return None, f"Could not parse CSV file '{filename}'. Please check that the file is not corrupted and uses standard comma, semicolon, or tab separation."
 
         elif ext in [".xlsx", ".xls"]:
-            file_obj.seek(0)
-            df = pd.read_excel(file_obj)
-            return df, None
+            try:
+                bio = io.BytesIO(raw_bytes)
+                df = pd.read_excel(bio)
+                if len(df.columns) > 0 and len(df) > 0:
+                    df.columns = [str(c).strip().replace("\r", "").replace("\n", "") for c in df.columns]
+                    return df, None
+                else:
+                    return None, f"Excel file '{filename}' contains no rows or columns."
+            except Exception as xl_err:
+                return None, f"Failed to parse Excel file '{filename}': {str(xl_err)}"
+
         else:
-            return None, f"Unsupported file format '{ext}'. Please upload a .csv or .xlsx/.xls file."
+            return None, f"Unsupported file extension '{ext}'. ROADGUARD AI accepts CSV (.csv) and Excel (.xlsx, .xls) files."
 
     except Exception as e:
         return None, f"File reading failed: {str(e)}"
