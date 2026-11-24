@@ -120,7 +120,7 @@ def inject_custom_styles():
     }
 
     .kpi-label {
-        font-size: 12px;
+        font-size: 11.5px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.8px;
@@ -129,15 +129,19 @@ def inject_custom_styles():
         display: flex;
         align-items: center;
         justify-content: space-between;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .kpi-value {
-        font-size: 30px;
+        font-size: clamp(20px, 2.2vw, 28px);
         font-weight: 800;
         color: #0F172A !important;
         font-family: var(--font-mono);
-        line-height: 1;
+        line-height: 1.15;
         margin-bottom: 6px;
+        word-break: break-word;
     }
 
     .kpi-delta {
@@ -301,6 +305,59 @@ def inject_custom_styles():
     section[data-testid="stSidebar"] {
         background-color: #FFFFFF !important;
         border-right: 1px solid #E2E8F0;
+    }
+
+    /* Sidebar Navigation Radio Buttons transformed into modern Navigation Pills */
+    section[data-testid="stSidebar"] div[role="radiogroup"] {
+        gap: 4px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label {
+        background-color: transparent !important;
+        border: 1px solid transparent !important;
+        border-radius: 8px !important;
+        padding: 8px 12px !important;
+        margin: 0 !important;
+        transition: all 0.15s ease-in-out !important;
+        cursor: pointer !important;
+        color: #334155 !important;
+        font-weight: 500 !important;
+        font-size: 13.5px !important;
+    }
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label:hover {
+        background-color: #F0F9FF !important;
+        color: #0284C7 !important;
+        transform: translateX(2px);
+    }
+
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label[data-checked="true"],
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label:has(input:checked) {
+        background-color: #F0F9FF !important;
+        border: 1px solid #BAE6FD !important;
+        border-left: 4px solid #0284C7 !important;
+        color: #0369A1 !important;
+        font-weight: 700 !important;
+        box-shadow: 0 1px 3px rgba(2, 132, 199, 0.08) !important;
+    }
+
+    /* Multiselect tag badges */
+    div[data-baseweb="tag"] {
+        background-color: #F0F9FF !important;
+        border: 1px solid #BAE6FD !important;
+        border-radius: 6px !important;
+        color: #0284C7 !important;
+    }
+
+    div[data-baseweb="tag"] span {
+        color: #0369A1 !important;
+        font-weight: 600 !important;
+    }
+
+    div[data-baseweb="tag"] svg {
+        fill: #0284C7 !important;
     }
 
     section[data-testid="stSidebar"] .stSelectbox label,

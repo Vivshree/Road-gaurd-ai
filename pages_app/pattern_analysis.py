@@ -8,7 +8,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from src.visualizer import (
-    plot_hour_weekday_heatmap, plot_feature_deviations, apply_dark_theme
+    plot_hour_weekday_heatmap, plot_feature_deviations, apply_light_theme
 )
 from src.config import CLUSTER_COLORS, COLOR_PANEL
 
@@ -51,7 +51,7 @@ def render_pattern_analysis():
                 barmode="stack",
                 color_discrete_sequence=CLUSTER_COLORS,
             )
-            st.plotly_chart(apply_dark_theme(fig_surf), use_container_width=True)
+            st.plotly_chart(apply_light_theme(fig_surf), use_container_width=True)
         else:
             st.info("Road_Surface or Road_Type feature missing.")
 
@@ -67,7 +67,7 @@ def render_pattern_analysis():
                 barmode="group",
                 color_discrete_map={"Fatal": "#EF4444", "Serious": "#F59E0B", "Slight": "#10B981"},
             )
-            st.plotly_chart(apply_dark_theme(fig_light), use_container_width=True)
+            st.plotly_chart(apply_light_theme(fig_light), use_container_width=True)
         else:
             st.info("Lighting_Condition or Accident_Severity missing.")
 

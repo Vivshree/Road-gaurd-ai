@@ -195,6 +195,7 @@ def render_upload_center():
     raw_cols_options = ["(Not Present)"] + list(df_current_raw.columns)
     current_mapping = st.session_state.get("column_mapping", auto_map_columns(df_current_raw.columns.tolist()))
 
+    d_ver = st.session_state.get("dataset_version", 1)
     map_cols = st.columns(3)
     user_mapping = {}
 
@@ -211,7 +212,7 @@ def render_upload_center():
                 f"{canonical_name}{req_marker}",
                 options=raw_cols_options,
                 index=default_index,
-                key=f"map_sel_{canonical_name}",
+                key=f"map_sel_{canonical_name}_{d_ver}",
                 help=meta["desc"],
             )
             user_mapping[canonical_name] = None if selected_raw == "(Not Present)" else selected_raw
@@ -343,6 +344,17 @@ def _run_pipeline(
         st.session_state["cluster_metadata"] = cluster_meta
         st.session_state["feature_deviations_df"] = deviation_df
         st.session_state["preprocessing_summary"] = prep_summary
+
+        # Bump dataset version & clear stale downstream page caches & filter states
+        st.session_state["dataset_version"] = st.session_state.get("dataset_version", 0) + 1
+        st.session_state.pop("elbow_curve_df", None)
+        st.session_state.pop("dist_res", None)
+        st.session_state.pop("active_lab_model", None)
+        st.session_state.pop("generated_pdf", None)
+        for k in list(st.session_state.keys()):
+            if k.startswith("exec_filter_") or k.startswith("map_filter_"):
+                del st.session_state[k]
+
         return True, None
     except Exception as e:
         return False, str(e)

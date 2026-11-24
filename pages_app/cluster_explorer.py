@@ -82,29 +82,36 @@ def render_cluster_explorer():
 
     # 1. Cluster Summary Cards (Grid)
     st.markdown("### Discovered Cluster Archetypes")
-    meta_cols = st.columns(len(cluster_meta))
-    for idx, (c_id, meta) in enumerate(cluster_meta.items()):
-        with meta_cols[idx]:
-            card_html = f"""
-            <div class="kpi-card" style="border-top: 3px solid {meta['color']};">
-                <div style="font-weight: 800; font-size: 14px; color: {meta['color']}; margin-bottom: 2px;">
-                    Cluster {c_id}
-                </div>
-                <div style="font-size: 12px; font-weight: 700; color: #0F172A; min-height: 32px;">
-                    {meta['label']}
-                </div>
-                <div style="font-size: 20px; font-weight: 800; color: #0F172A; font-family: monospace; margin: 6px 0;">
-                    {meta['size']:,} <span style="font-size: 11px; font-weight: 600; color: #64748B;">({meta['pct']}%)</span>
-                </div>
-                <div style="font-size: 11.5px; color: #334155; line-height: 1.5;">
-                    &bull; Fatality: <strong>{meta['fatality_rate']}%</strong><br/>
-                    &bull; Night-time: <strong>{meta['night_pct']}%</strong><br/>
-                    &bull; Avg Speed: <strong>{meta['avg_speed']} km/h</strong><br/>
-                    &bull; Road: <strong>{meta['top_road']}</strong>
-                </div>
-            </div>
-            """
-            st.markdown(card_html, unsafe_allow_html=True)
+    if cluster_meta:
+        cards_per_row = 4
+        c_items = list(cluster_meta.items())
+        for row_idx in range(0, len(c_items), cards_per_row):
+            row_items = c_items[row_idx : row_idx + cards_per_row]
+            cols = st.columns(len(row_items))
+            for col, (c_id, meta) in zip(cols, row_items):
+                with col:
+                    card_html = f"""
+                    <div class="kpi-card" style="border-top: 3px solid {meta['color']}; margin-bottom: 12px;">
+                        <div style="font-weight: 800; font-size: 14px; color: {meta['color']}; margin-bottom: 2px;">
+                            Cluster {c_id}
+                        </div>
+                        <div style="font-size: 12px; font-weight: 700; color: #0F172A; min-height: 32px;">
+                            {meta['label']}
+                        </div>
+                        <div style="font-size: 20px; font-weight: 800; color: #0F172A; font-family: monospace; margin: 6px 0;">
+                            {meta['size']:,} <span style="font-size: 11px; font-weight: 600; color: #64748B;">({meta['pct']}%)</span>
+                        </div>
+                        <div style="font-size: 11.5px; color: #334155; line-height: 1.5;">
+                            &bull; Fatality: <strong>{meta['fatality_rate']}%</strong><br/>
+                            &bull; Night-time: <strong>{meta['night_pct']}%</strong><br/>
+                            &bull; Avg Speed: <strong>{meta['avg_speed']} km/h</strong><br/>
+                            &bull; Road: <strong>{meta['top_road']}</strong>
+                        </div>
+                    </div>
+                    """
+                    st.markdown(card_html, unsafe_allow_html=True)
+    else:
+        st.info("No cluster archetypes computed yet.")
 
     st.markdown("<div style='height: 16px;'></div>", unsafe_allow_html=True)
 

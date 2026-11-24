@@ -8,7 +8,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from src.styles import render_kpi
-from src.visualizer import apply_dark_theme
+from src.visualizer import apply_light_theme
 from src.config import CLUSTER_COLORS
 
 def render_location_intel():
@@ -28,20 +28,31 @@ def render_location_intel():
         st.warning("No processed dataset found. Please visit the Dataset Upload Center to load data.")
         return
 
-    # Select Location / City
-    loc_col = "City" if "City" in df.columns else ("State" if "State" in df.columns else None)
-    if not loc_col:
-        st.info("No geographical jurisdiction column (City or State) available in dataset.")
-        return
+    # Determine best location column available
+    if "City" in df.columns and df["City"].nunique() > 1:
+        loc_col = "City"
+    elif "State" in df.columns and df["State"].nunique() > 1:
+        loc_col = "State"
+    elif "Road_Type" in df.columns:
+        loc_col = "Road_Type"
+    elif "City" in df.columns:
+        loc_col = "City"
+    else:
+        loc_col = "Cluster"
 
     available_locs = sorted(df[loc_col].dropna().unique().tolist())
+    if not available_locs:
+        available_locs = ["All Corridors"]
+
+    d_ver = st.session_state.get("dataset_version", 1)
     selected_loc = st.selectbox(
         f"Select Municipal Jurisdiction / Node ({loc_col})",
         options=available_locs,
         index=0,
+        key=f"loc_sel_{d_ver}",
     )
 
-    loc_df = df[df[loc_col] == selected_loc]
+    loc_df = df[df[loc_col] == selected_loc] if loc_col in df.columns else df
     loc_total = len(loc_df)
 
     if loc_total == 0:
@@ -51,8 +62,9 @@ def render_location_intel():
     cluster_meta = st.session_state.get("cluster_metadata", {})
 
     # Dominant cluster in this city
-    if "Cluster" in loc_df.columns:
-        dominant_cluster = int(loc_df["Cluster"].mode()[0])
+    if "Cluster" in loc_df.columns and not loc_df["Cluster"].dropna().empty:
+        c_mode = loc_df["Cluster"].dropna().mode()
+        dominant_cluster = int(c_mode.iloc[0]) if not c_mode.empty else 0
         dom_meta = cluster_meta.get(dominant_cluster, {})
         dom_label = dom_meta.get("label", f"Cluster {dominant_cluster}")
     else:
@@ -99,26 +111,27 @@ def render_location_intel():
                 color_discrete_sequence=CLUSTER_COLORS,
                 title=f"Accident Share by Cluster in {selected_loc}",
             )
-            st.plotly_chart(apply_dark_theme(fig_pie), use_container_width=True)
+            st.plotly_chart(apply_light_theme(fig_pie), use_container_width=True)
         else:
             st.info("Clustering not fitted.")
 
     with col_v2:
         st.markdown(f"#### Road Type Risk Breakdown ({selected_loc})")
         if "Road_Type" in loc_df.columns:
-            road_dist = loc_df.groupby("Road_Type").agg(
-                Accidents=("Accident_ID", "count"),
-                Fatalities=("Number_of_Fatalities", "sum"),
-            ).reset_index().sort_values("Accidents", ascending=False)
+            agg_kwargs = {"Accidents": ("Cluster", "count")}
+            if "Number_of_Fatalities" in loc_df.columns:
+                agg_kwargs["Fatalities"] = ("Number_of_Fatalities", "sum")
+            road_dist = loc_df.groupby("Road_Type").agg(**agg_kwargs).reset_index().sort_values("Accidents", ascending=False)
+            color_col = "Fatalities" if "Fatalities" in road_dist.columns else None
             fig_bar = px.bar(
                 road_dist,
                 x="Road_Type",
                 y="Accidents",
-                color="Fatalities",
-                color_continuous_scale=["#10B981", "#F59E0B", "#EF4444"],
-                title=f"Collisions &amp; Fatalities by Roadway",
+                color=color_col,
+                color_continuous_scale=["#10B981", "#F59E0B", "#EF4444"] if color_col else None,
+                title="Collisions &amp; Fatalities by Roadway",
             )
-            st.plotly_chart(apply_dark_theme(fig_bar), use_container_width=True)
+            st.plotly_chart(apply_light_theme(fig_bar), use_container_width=True)
         else:
             st.info("Road_Type not available.")
 
@@ -126,14 +139,15 @@ def render_location_intel():
     st.markdown("<div style='height: 16px;'></div>", unsafe_allow_html=True)
     st.markdown(f"#### Peer Comparison: Other Nodes in Cluster {dominant_cluster} ({dom_label})")
     
-    if "Cluster" in df.columns:
+    if "Cluster" in df.columns and loc_col in df.columns:
         peer_df = df[df["Cluster"] == dominant_cluster]
-        peer_summary = peer_df.groupby(loc_col).agg(
-            Cluster_Accidents=("Accident_ID", "count"),
-            Fatalities=("Number_of_Fatalities", "sum"),
-            Injuries=("Number_of_Injuries", "sum"),
-            Avg_Speed=("Speed_Limit", "mean"),
-        ).reset_index().sort_values("Cluster_Accidents", ascending=False)
+        agg_peer = {
+            "Cluster_Accidents": ("Cluster", "count"),
+            "Fatalities": ("Number_of_Fatalities", "sum") if "Number_of_Fatalities" in peer_df.columns else ("Cluster", "count"),
+            "Injuries": ("Number_of_Injuries", "sum") if "Number_of_Injuries" in peer_df.columns else ("Cluster", "count"),
+            "Avg_Speed": ("Speed_Limit", "mean") if "Speed_Limit" in peer_df.columns else ("Cluster", "count"),
+        }
+        peer_summary = peer_df.groupby(loc_col).agg(**agg_peer).reset_index().sort_values("Cluster_Accidents", ascending=False)
         peer_summary["Avg_Speed"] = peer_summary["Avg_Speed"].round(1)
         st.dataframe(peer_summary, use_container_width=True)
 

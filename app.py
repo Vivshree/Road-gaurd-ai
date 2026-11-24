@@ -108,6 +108,9 @@ with st.sidebar:
         st.session_state["df_raw"] = df_sample
         st.session_state["dataset_name"] = "Synthetic Academic Benchmark"
         st.session_state["dataset_source"] = "Synthetic Multi-Corridor Road Accident Generator"
+        st.session_state["last_uploaded_identifier"] = None
+        st.session_state["last_uploaded_file"] = None
+        st.session_state["dataset_version"] = st.session_state.get("dataset_version", 0) + 1
         st.session_state["column_mapping"] = auto_map_columns(df_sample.columns.tolist())
         _run_pipeline(df_sample, k=4)
         st.success("Reset to benchmark dataset!")

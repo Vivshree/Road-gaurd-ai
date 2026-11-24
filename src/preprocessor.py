@@ -57,7 +57,10 @@ class AccidentPreprocessor:
         # 4. Numerical Imputation
         clean_df = self._impute_numerical_columns(clean_df)
 
-        # 5. Feature Selection for Clustering
+        # 5. Canonical Schema Harmonisation (Ensures all 8 views have valid attributes)
+        clean_df = self._ensure_canonical_schema(clean_df)
+
+        # 6. Feature Selection for Clustering
         available_features = [f for f in self.selected_features if f in clean_df.columns]
         if len(available_features) < 2:
             # Fallback to any numeric columns
@@ -226,5 +229,81 @@ class AccidentPreprocessor:
             else:
                 # Default fallback values if column is missing from dataset
                 df[col] = default_val
+
+        return df
+
+    def _ensure_canonical_schema(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Guarantees that all canonical schema columns are populated with valid, non-null values.
+        If a column was missing from the user's uploaded dataset, an intelligent default is provided
+        so that all dashboard pages (Overview, Maps, Clusters, Reports) execute seamlessly.
+        """
+        n_rows = len(df)
+        if n_rows == 0:
+            return df
+
+        # 1. Identifier
+        if "Accident_ID" not in df.columns or df["Accident_ID"].isnull().all():
+            df["Accident_ID"] = [f"ACC-{i+1:05d}" for i in range(n_rows)]
+            self.audit_log.append("Synthesized canonical 'Accident_ID' codes.")
+        else:
+            df["Accident_ID"] = df["Accident_ID"].fillna(pd.Series([f"ACC-{i+1:05d}" for i in range(n_rows)], index=df.index))
+
+        # 2. Date & Time fallbacks if unmapped
+        if "Date" not in df.columns:
+            df["Date"] = pd.date_range(end=pd.Timestamp.today().normalize(), periods=n_rows, freq="h").strftime("%Y-%m-%d")
+            self.audit_log.append("Populated default sequential 'Date' values.")
+        else:
+            df["Date"] = df["Date"].fillna(pd.Timestamp.today().strftime("%Y-%m-%d"))
+
+        if "Time" not in df.columns:
+            df["Time"] = "12:00"
+        else:
+            df["Time"] = df["Time"].fillna("12:00")
+
+        # 3. Administrative / Spatial Jurisdictions
+        if "State" not in df.columns or df["State"].isnull().all():
+            df["State"] = "National Corridor"
+        else:
+            df["State"] = df["State"].fillna("General Region").astype(str).str.strip()
+
+        if "City" not in df.columns or df["City"].isnull().all():
+            if "State" in df.columns and not df["State"].isnull().all() and df["State"].nunique() > 1:
+                df["City"] = df["State"]
+            else:
+                df["City"] = "Metro Node"
+        else:
+            df["City"] = df["City"].fillna("Urban District").astype(str).str.strip()
+
+        # 4. Road Classification & Environment
+        if "Road_Type" not in df.columns or df["Road_Type"].isnull().all():
+            if "Speed_Limit" in df.columns:
+                df["Road_Type"] = df["Speed_Limit"].apply(
+                    lambda s: "Expressway / Highway" if s >= 80 else ("National Highway" if s >= 60 else "Urban Arterial")
+                )
+            else:
+                df["Road_Type"] = "Urban Arterial"
+        else:
+            df["Road_Type"] = df["Road_Type"].fillna("Urban Arterial").astype(str).str.strip()
+
+        if "Weather" not in df.columns or df["Weather"].isnull().all():
+            df["Weather"] = df["Is_Adverse_Weather"].map({1: "Heavy Rain / Fog", 0: "Clear"}) if "Is_Adverse_Weather" in df.columns else "Clear"
+        else:
+            df["Weather"] = df["Weather"].fillna("Clear").astype(str).str.strip()
+
+        if "Lighting_Condition" not in df.columns or df["Lighting_Condition"].isnull().all():
+            df["Lighting_Condition"] = df["Is_Night"].map({1: "Darkness - lights lit", 0: "Daylight"}) if "Is_Night" in df.columns else "Daylight"
+        else:
+            df["Lighting_Condition"] = df["Lighting_Condition"].fillna("Daylight").astype(str).str.strip()
+
+        if "Road_Surface" not in df.columns or df["Road_Surface"].isnull().all():
+            df["Road_Surface"] = df["Is_Adverse_Weather"].map({1: "Wet", 0: "Dry"}) if "Is_Adverse_Weather" in df.columns else "Dry"
+        else:
+            df["Road_Surface"] = df["Road_Surface"].fillna("Dry").astype(str).str.strip()
+
+        if "Vehicle_Type" not in df.columns or df["Vehicle_Type"].isnull().all():
+            df["Vehicle_Type"] = "Motor Vehicle"
+        else:
+            df["Vehicle_Type"] = df["Vehicle_Type"].fillna("Motor Vehicle").astype(str).str.strip()
 
         return df

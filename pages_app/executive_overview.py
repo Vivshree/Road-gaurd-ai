@@ -32,24 +32,25 @@ def render_executive_overview():
         return
 
     # 1. Interactive Dynamic Filters
+    d_ver = st.session_state.get("dataset_version", 1)
     with st.expander("🔍 Strategic Filter Controls", expanded=False):
         f_col1, f_col2, f_col3, f_col4 = st.columns(4)
 
         with f_col1:
             states_available = sorted(df["State"].dropna().unique().tolist()) if "State" in df.columns else []
-            selected_states = st.multiselect("State / Region", options=states_available, default=states_available)
+            selected_states = st.multiselect("State / Region", options=states_available, default=states_available, key=f"exec_filter_state_{d_ver}")
 
         with f_col2:
             cities_available = sorted(df["City"].dropna().unique().tolist()) if "City" in df.columns else []
-            selected_cities = st.multiselect("City / District", options=cities_available, default=cities_available)
+            selected_cities = st.multiselect("City / District", options=cities_available, default=cities_available, key=f"exec_filter_city_{d_ver}")
 
         with f_col3:
             severities_available = sorted(df["Accident_Severity"].dropna().unique().tolist()) if "Accident_Severity" in df.columns else []
-            selected_severities = st.multiselect("Severity", options=severities_available, default=severities_available)
+            selected_severities = st.multiselect("Severity", options=severities_available, default=severities_available, key=f"exec_filter_sev_{d_ver}")
 
         with f_col4:
             roads_available = sorted(df["Road_Type"].dropna().unique().tolist()) if "Road_Type" in df.columns else []
-            selected_roads = st.multiselect("Road Type", options=roads_available, default=roads_available)
+            selected_roads = st.multiselect("Road Type", options=roads_available, default=roads_available, key=f"exec_filter_road_{d_ver}")
 
     # Apply filters
     filtered_df = df.copy()
@@ -63,7 +64,10 @@ def render_executive_overview():
         filtered_df = filtered_df[filtered_df["Road_Type"].isin(selected_roads)]
 
     if len(filtered_df) == 0:
-        st.info("No accident records match the selected filters. Please expand your selection.")
+        st.warning("⚠️ No accident records match the selected filter combination.")
+        if st.button("🔄 Reset All Filters", key=f"reset_exec_filters_{d_ver}", use_container_width=True):
+            st.session_state["dataset_version"] = d_ver + 1
+            st.rerun()
         return
 
     # 2. Executive KPI Cards
@@ -135,13 +139,13 @@ def render_executive_overview():
         group_cols.append("Road_Type")
 
     if group_cols:
-        top_locations = filtered_df.groupby(group_cols).agg(
-            Total_Accidents=("Accident_ID", "count"),
-            Fatalities=("Number_of_Fatalities", "sum"),
-            Injuries=("Number_of_Injuries", "sum"),
-            Avg_Severity=("Severity_Numeric", "mean"),
-        ).reset_index().sort_values("Total_Accidents", ascending=False).head(10)
-
+        agg_spec = {
+            "Total_Accidents": ("Accident_ID", "count") if "Accident_ID" in filtered_df.columns else ("Cluster", "count"),
+            "Fatalities": ("Number_of_Fatalities", "sum") if "Number_of_Fatalities" in filtered_df.columns else ("Cluster", "count"),
+            "Injuries": ("Number_of_Injuries", "sum") if "Number_of_Injuries" in filtered_df.columns else ("Cluster", "count"),
+            "Avg_Severity": ("Severity_Numeric", "mean") if "Severity_Numeric" in filtered_df.columns else ("Cluster", "count"),
+        }
+        top_locations = filtered_df.groupby(group_cols).agg(**agg_spec).reset_index().sort_values("Total_Accidents", ascending=False).head(10)
         top_locations["Avg_Severity"] = top_locations["Avg_Severity"].round(2)
         st.dataframe(top_locations, use_container_width=True)
     else:

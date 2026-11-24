@@ -33,39 +33,36 @@ def render_hotspot_map():
         In accordance with scientific and academic integrity, **ROADGUARD AI strictly avoids inventing or hallucinating coordinates**.
         """)
         st.markdown("#### Tabular Location Breakdown (Alternative):")
-        if "City" in df.columns:
-            loc_summary = df.groupby("City").agg(
-                Total_Accidents=("Accident_ID", "count"),
-                Fatalities=("Number_of_Fatalities", "sum"),
-                Injuries=("Number_of_Injuries", "sum"),
-            ).reset_index().sort_values("Total_Accidents", ascending=False)
-            st.dataframe(loc_summary, use_container_width=True)
+        loc_col = "City" if "City" in df.columns else ("Road_Type" if "Road_Type" in df.columns else "Cluster")
+        loc_summary = df.groupby(loc_col).size().reset_index(name="Total_Accidents").sort_values("Total_Accidents", ascending=False)
+        st.dataframe(loc_summary, use_container_width=True)
         return
 
     # 1. Filters Bar
+    d_ver = st.session_state.get("dataset_version", 1)
     with st.expander("⚙️ Spatial Filters &amp; Layer Controls", expanded=True):
         m_col1, m_col2, m_col3, m_col4, m_col5 = st.columns(5)
 
         with m_col1:
             severities = sorted(df["Accident_Severity"].dropna().unique().tolist()) if "Accident_Severity" in df.columns else []
-            sel_sev = st.multiselect("Severity", options=severities, default=severities)
+            sel_sev = st.multiselect("Severity", options=severities, default=severities, key=f"map_filter_sev_{d_ver}")
 
         with m_col2:
             weather_opts = sorted(df["Weather"].dropna().unique().tolist()) if "Weather" in df.columns else []
-            sel_weather = st.multiselect("Atmosphere / Weather", options=weather_opts, default=weather_opts)
+            sel_weather = st.multiselect("Atmosphere / Weather", options=weather_opts, default=weather_opts, key=f"map_filter_weather_{d_ver}")
 
         with m_col3:
             light_opts = sorted(df["Lighting_Condition"].dropna().unique().tolist()) if "Lighting_Condition" in df.columns else []
-            sel_light = st.multiselect("Ambient Lighting", options=light_opts, default=light_opts)
+            sel_light = st.multiselect("Ambient Lighting", options=light_opts, default=light_opts, key=f"map_filter_light_{d_ver}")
 
         with m_col4:
             cluster_opts = sorted(df["Cluster"].dropna().unique().tolist()) if "Cluster" in df.columns else []
             cluster_display_opts = ["All Clusters"] + [f"Cluster {c}" for c in cluster_opts]
-            sel_cluster_str = st.selectbox("Cluster Segmentation", options=cluster_display_opts, index=0)
+            sel_cluster_str = st.selectbox("Cluster Segmentation", options=cluster_display_opts, index=0, key=f"map_filter_cluster_{d_ver}")
 
         with m_col5:
-            enable_heatmap = st.checkbox("Overlay Density Heatmap", value=True)
-            marker_density = st.slider("Max Visible Markers", min_value=200, max_value=2500, value=1200, step=100)
+            enable_heatmap = st.checkbox("Overlay Density Heatmap", value=True, key=f"map_enable_heat_{d_ver}")
+            marker_density = st.slider("Max Visible Markers", min_value=200, max_value=2500, value=1200, step=100, key=f"map_density_{d_ver}")
 
     # Filter records
     filtered_df = df.copy()
@@ -80,7 +77,10 @@ def render_hotspot_map():
         filtered_df = filtered_df[filtered_df["Cluster"] == c_num]
 
     if len(filtered_df) == 0:
-        st.info("No accident points match the selected spatial criteria.")
+        st.warning("⚠️ No accident points match the selected spatial criteria.")
+        if st.button("🔄 Reset Spatial Filters", key=f"reset_map_filters_{d_ver}", use_container_width=True):
+            st.session_state["dataset_version"] = d_ver + 1
+            st.rerun()
         return
 
     # Render Map
