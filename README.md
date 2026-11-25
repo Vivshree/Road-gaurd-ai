@@ -228,7 +228,44 @@ ROADGUARD AI accepts arbitrary real-world CSV or Excel datasets. The ingestion e
 
 ---
 
-## 📄 7. Academic License & Citation
+## ☁️ 7. Cloud Deployment Guide
+
+ROADGUARD AI is built with Streamlit and requires a persistent background process with WebSocket support.
+
+### Option A: Streamlit Community Cloud (Recommended — 100% Free & 1-Click)
+Streamlit Community Cloud is the official hosting platform for Streamlit applications:
+1. Fork or push this repository to GitHub.
+2. Visit **[share.streamlit.io](https://share.streamlit.io)** and sign in with GitHub.
+3. Click **"New app"** and enter:
+   - **Repository:** `Vivshree/Road-gaurd-ai`
+   - **Branch:** `main`
+   - **Main file path:** `app.py`
+4. Click **Deploy!** Your app will be live with a permanent public URL and automatic re-deployments on every `git push`.
+
+### Option B: Render.com (Free Web Service)
+1. Sign in to **[Render.com](https://dashboard.render.com)** and create a new **Web Service**.
+2. Connect this GitHub repository.
+3. Configuration:
+   - **Environment:** `Python 3`
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `streamlit run app.py --server.port $PORT --server.address 0.0.0.0`
+4. Click **Create Web Service**.
+
+### Option C: Docker Containerization
+A production-ready [Dockerfile](Dockerfile) is included:
+```bash
+# Build Docker image
+docker build -t roadguard-ai .
+
+# Run container locally on port 8501
+docker run -p 8501:8501 roadguard-ai
+```
+
+> **Note on Vercel:** Vercel is a serverless platform designed for stateless HTTP APIs (Next.js, Flask, FastAPI). Because Streamlit is an interactive stateful application requiring persistent WebSockets, Vercel's serverless runtime raises `[PYTHON_ENTRYPOINT_NOT_FOUND]`. Please use Streamlit Community Cloud or Render for cloud hosting.
+
+---
+
+## 📄 8. Academic License & Citation
 
 This software is developed as an academic engineering research project for unsupervised machine learning decision-support.  
 **Academic Citation:**  
